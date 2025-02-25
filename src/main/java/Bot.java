@@ -15,47 +15,49 @@ import java.util.List;
 
 public class Bot extends TelegramLongPollingBot {
 
-    public InlineKeyboardButton sendForStartTest = InlineKeyboardButton.builder()
-            .text("Send for start test")
-            .callbackData("start")
-            .build();
-
-    public InlineKeyboardButton thereIsNoDifference = InlineKeyboardButton.builder()
-            .text("Нет разницы")
-            .callbackData("нет разницы")
-            .build();
-
-    public InlineKeyboardButton typeUsingData = InlineKeyboardButton.builder()
-            .text("Разница в типе используемых данных")
-            .callbackData("разница в типе используемых данных")
-            .build();
-
-    public InlineKeyboardButton createCopy = InlineKeyboardButton.builder().
-            text("Разница в создании копий")
-            .callbackData("разница в создании копий")
-            .build();
-
-    public InlineKeyboardButton classOrPrimitive = InlineKeyboardButton.builder()
-            .text("Один класс, а другой примитив")
-            .callbackData("один класс, а другой примитив")
-            .build();
-
-    private InlineKeyboardMarkup keyboardM1 = InlineKeyboardMarkup.builder()
-            .keyboardRow(List.of(sendForStartTest)).build();
-
-    private InlineKeyboardMarkup sendQuestionOne = InlineKeyboardMarkup.builder()
-            .keyboardRow(List.of(sendForStartTest))
-            .keyboardRow(List.of(thereIsNoDifference))
-            .keyboardRow(List.of(typeUsingData))
-            .keyboardRow(List.of(createCopy))
-            .build();
-
 
     @Override
     public void onUpdateReceived(Update update) {
         buttonTab(update);
         isCommand(update.getMessage());
     }
+
+    public InlineKeyboardButton dotaSkinsButton = InlineKeyboardButton.builder()
+            .text("Скины Dota2")
+            .callbackData("dota_skins")
+            .build();
+
+    public InlineKeyboardButton csSkinsButton = InlineKeyboardButton.builder()
+            .text("Скины CS2")
+            .callbackData("cs_skins")
+            .build();
+
+    private InlineKeyboardMarkup sendGames = InlineKeyboardMarkup.builder()
+            .keyboardRow(List.of(csSkinsButton))
+            .keyboardRow(List.of(dotaSkinsButton))
+            .build();
+
+    private InlineKeyboardButton lisSkinsDotaButton = InlineKeyboardButton.builder()
+            .text("Lis-skins")
+            .callbackData("lis_skins")
+            .build();
+
+    private InlineKeyboardButton avanMarketDotaButton = InlineKeyboardButton.builder()
+            .text("Avan Market")
+            .callbackData("avan_market")
+            .build();
+
+    private InlineKeyboardButton marketDotaButton = InlineKeyboardButton.builder()
+            .text("Market Dota2")
+            .callbackData("dota_market")
+            .build();
+
+    private InlineKeyboardMarkup sendMarketsForDota = InlineKeyboardMarkup.builder()
+            .keyboardRow(List.of(lisSkinsDotaButton))
+            .keyboardRow(List.of(avanMarketDotaButton))
+            .keyboardRow(List.of(marketDotaButton))
+            .build();
+
 
     public void buttonTab(Update update) {
         System.out.println("Update: " + update);
@@ -71,13 +73,11 @@ public class Bot extends TelegramLongPollingBot {
                     .chatId(idUser.toString()).messageId(idMessage)
                     .build();
 
-
-
-            if (data.equals("start")) {
-                editMessageText.setText("Какая разница между классами String и StringBuilder?");
-                editMessageReplyMarkup.setReplyMarkup(sendQuestionOne);
-            } else if (data.equals("нет разницы")) {
-                editMessageText.setText("Выберите только примитивы");
+            switch (data) {
+                case "dota_skins": {
+                    editMessageText.setText("Выберите торговую площадку");
+                    editMessageReplyMarkup.setReplyMarkup(sendMarketsForDota);
+                }
             }
 
             AnswerCallbackQuery answerCallbackQuery = AnswerCallbackQuery.builder()
@@ -87,7 +87,7 @@ public class Bot extends TelegramLongPollingBot {
             try {
                 execute(answerCallbackQuery);
                 execute(editMessageReplyMarkup);
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 ex.getMessage();
             }
 
@@ -96,8 +96,8 @@ public class Bot extends TelegramLongPollingBot {
 
     public void isCommand(Message message) {
         String text = message.getText();
-        if (text.equals("/start_test")) {
-            sendMenu(message.getFrom().getId(), "<b>Go to the start test</b>", keyboardM1);
+        if (text.equals("/start")) {
+            sendMenu(message.getFrom().getId(), "<b>Выберите игру</b>", sendGames);
         }
     }
 
